@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pendaftaran Natal GPdI Cikarang 2026</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <style>
+        .hidden-section { display: none; }
+    </style>
+</head>
+<body class="bg-gray-100 font-sans text-gray-800">
+
+    <!-- APP CONTAINER -->
+    <div class="max-w-xl mx-auto bg-white min-h-screen shadow-md flex flex-col justify-between">
+        
+        <div>
+            <!-- BANNER COMPONENT -->
+            <div id="banner-container" class="relative w-full h-48 bg-gradient-to-r from-red-700 to-green-700 flex items-center justify-center text-white overflow-hidden">
+                <img id="banner-img" src="" class="absolute inset-0 w-full h-full object-cover hidden" alt="Banner Acara">
+                <div id="banner-placeholder" class="text-center p-4 z-10">
+                    <h1 class="text-2xl font-bold uppercase tracking-wider drop-shadow-md">Perayaan Natal 2026</h1>
+                    <p class="text-sm font-medium drop-shadow-sm">GPdI Cikarang • 13 Desember 2026</p>
+                </div>
+            </div>
+
+            <!-- NAVIGATION TABS -->
+            <div class="flex border-b border-gray-200 sticky top-0 bg-white z-20 shadow-sm">
+                <button onclick="switchTab('tab-daftar')" id="btn-tab-daftar" class="w-1/2 py-3 text-center font-semibold text-red-600 border-b-2 border-red-600 transition">
+                    📝 Pendaftaran
+                </button>
+                <button onclick="switchTab('tab-admin')" id="btn-tab-admin" class="w-1/2 py-3 text-center font-semibold text-gray-500 hover:text-red-600 transition">
+                    🔒 Panel Admin
+                </button>
+            </div>
+
+            <!-- MAIN CONTENT AREA -->
+            <div class="p-5">
+                
+                <!-- 1. TAB DAFTAR -->
+                <div id="tab-daftar" class="space-y-6">
+                    <!-- Session Quota Info -->
+                    <div class="bg-amber-50 border border-amber-200 rounded-xl p-4 space-y-2">
+                        <h3 class="font-bold text-amber-900 text-sm flex items-center gap-1">📊 Sisa Kuota Sesi Ibadah:</h3>
+                        <div class="grid grid-cols-3 gap-2 text-xs text-center font-medium">
+                            <div class="bg-white p-2 rounded-lg border border-amber-100 shadow-sm">
+                                <div class="text-gray-500">Sesi 1 (10:00)</div>
+                                <div id="quota-s1" class="text-lg font-bold text-green-600">300/300</div>
+                            </div>
+                            <div class="bg-white p-2 rounded-lg border border-amber-100 shadow-sm">
+                                <div class="text-gray-500">Sesi 2 (15:00)</div>
+                                <div id="quota-s2" class="text-lg font-bold text-green-600">300/300</div>
+                            </div>
+                            <div class="bg-white p-2 rounded-lg border border-amber-100 shadow-sm">
+                                <div class="text-gray-500">Sesi 3 (18:30)</div>
+                                <div id="quota-s3" class="text-lg font-bold text-green-600">300/300</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Toggle Category -->
+                    <div class="flex bg-gray-100 p-1 rounded-xl">
+                        <button onclick="setRegType('tamu')" id="btn-type-tamu" class="w-1/2 py-2 text-sm font-bold rounded-lg bg-white text-gray-800 shadow-xs transition">Jemaat / Tamu</button>
+                        <button onclick="setRegType('petugas')" id="btn-type-petugas" class="w-1/2 py-2 text-sm font-bold rounded-lg text-gray-500 transition">Khusus Pelayanan</button>
+                    </div>
+
+                    <!-- FORM -->
+                    <form id="reg-form" onsubmit="handleRegistration(event)" class="space-y-4">
+                        <!-- TAMU FIELD -->
+                        <div id="section-tamu" class="space-y-3">
+                            <label class="block text-sm font-bold text-gray-700">Nama Lengkap Jemaat (Maks. 6 Orang)</label>
+                            <div id="guest-names-container" class="space-y-2">
+                                <input type="text" required class="guest-name-input w-full p-2.5 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-red-500 focus:outline-none" placeholder="Nama Orang 1">
+                            </div>
+                            <button type="button" onclick="addGuestField()" id="btn-add-guest" class="text-xs font-semibold text-red-600 hover:text-red-800 flex items-center gap-1 mt-1">
+                                ➕ Tambah Anggota/Keluarga (Maks 6)
+                            </button>
+                            
+                            <div class="pt-2">
+                                <label class="block text-sm font-bold text-gray-700 mb-1">Nomor HP yang Aktif (WhatsApp)</label>
+                                <input type="tel" id="tamu-hp" required class="w-full p-2.5 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-red-500 focus:outline-none" placeholder="Contoh: 0812345678xx">
+                            </div>
+
+                            <div class="pt-2">
+                                <label class="block text-sm font-bold text-gray-700 mb-1">Pilih Sesi Ibadah</label>
+                                <select id="tamu-sesi" required class="w-full p-2.5 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-red-500 focus:outline-none bg-white">
+                                    <option value="" disabled selected>-- Pilih Sesi --</option>
+                                    <option value="1">Sesi 1 (Jam 10.00 WIB)</option>
+                                    <option value="2">Sesi 2 (Jam 15.00 WIB)</option>
+                                    <option value="3">Sesi 3 (Jam 18.30 WIB)</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- PETUGAS FIELD -->
+                        <div id="section-petugas" class="space-y-3 hidden-section">
+                            <div>
+                                <label class="block text-sm font-bold text-gray-700 mb-1">Nama Lengkap Pelayan</label>
+                                <input type="text" id="petugas-nama" class="w-full p-2.5 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-red-500 focus:outline-none" placeholder="Nama Pelayan">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-bold text-gray-700 mb-1">Nomor HP yang Aktif</label>
+                                <input type="tel" id="petugas-hp" class="w-full p-2.5 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-red-500 focus:outline-none" placeholder="Contoh: 0812345678xx">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-bold text-gray-700 mb-1">Sesi Pelayanan</label>
+                                <select id="petugas-sesi" class="w-full p-2.5 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-red-500 focus:outline-none bg-white">
+                                    <option value="" disabled selected>-- Pilih Sesi Tugas --</option>
+                                    <option value="Sesi 1">Sesi 1</option>
+                                    <option value="Sesi 2">Sesi 2</option>
+                                    <option value="Sesi 3">Sesi 3</option>
+                                    <option value="Sesi 1 & 2">Sesi 1 & 2</option>
+                                    <option value="Sesi 1 & 3">Sesi 1 & 3</option>
+                                    <option value="Sesi 2 & 3">Sesi 2 & 3</option>
+                                    <option value="Sesi 1, 2 & 3">Sesi 1, 2 & 3</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="w-full py-3 bg-red-600 text-white font-bold rounded-lg shadow-md hover:bg-red-700 transition duration-200 mt-4 cursor-pointer">
+                            🚀 Kirim Pendaftaran
+                        </button>
+                    </form>
+
+                    <!-- Ticket / Success Result Component -->
+                    <div id="ticket-result" class="hidden-section bg-green-50 border border-green-200 rounded-xl p-5 text-center space-y-4 shadow-inner">
+                        <div class="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mx-auto text-green-600 text-2xl font-bold">✓</div>
+                        <div>
+                            <h3 class="text-lg font-bold text-green-900">Pendaftaran Berhasil!</h3>
+                            <p class="text-xs text-gray-500 mt-0.5">Silakan simpan/screenshoot nomor unik Anda di bawah ini:</p>
+                        </div>
+                        <div class="bg-white border-2 border-dashed border-green-300 p-4 rounded-lg inline-block min-w-[200px]">
+                            <div class="text-xs text-gray-400 font-mono tracking-wider">KODE UNIK TIKET</div>
+                            <div id="ticket-code" class="text-2xl font-black text-gray-800 tracking-widest mt-1">NATAL-XXXX</div>
+                        </div>
+                        <div id="ticket-details" class="text-left text-xs text-gray-700 space-y-1 bg-white p-3 rounded-lg border border-gray-100">
+                            <!-- filled dynamically -->
+                        </div>
+                        <button onclick="resetForm()" class="text-xs text-gray-500 hover:text-red-600 underline cursor-pointer">Buat Pendaftaran Baru</button>
+                    </div>
+                </div>
+
+                <!-- 2. TAB ADMIN PANEL -->
+                <div id="tab-admin" class="hidden-section space-y-4">
+                    
+                    <!-- Admin Gate Auth -->
+                    <div id="admin-auth" class="space-y-3 bg-white p-5 border border-gray-200 rounded-xl shadow-xs">
+                        <h3 class="text-sm font-bold text-gray-700">🔐 Masukkan Pin Admin</h3>
+                        <div class="flex gap-2">
+                            <input type="password" id="admin-pin" class="w-full p-2.5 border border-gray-300 rounded-lg text-sm tracking-widest" placeholder="••••">
+                            <button onclick="verifyAdminPin()" class="bg-gray-800 text-white px-5 py-2.5 rounded-lg text-sm font-bold hover:bg-gray-900 cursor-pointer">Masuk</button>
+                        </div>
+                        <p id="auth-err" class="text-xs text-red-600 font-medium hidden">Pin salah! Silakan coba lagi.</p>
+                    </div>
+
+                    <!-- Admin Dashboard Area (Hidden initially) -->
+                    <div id="admin-dashboard" class="hidden-section space-y-6">
+                        <!-- Banner Customization Feature -->
+                        <div class="bg-gray-50 border border-gray-200 rounded-xl p-4 space-y-3">
+                            <h4 class="font-bold text-sm text-gray-700 flex items-center gap-1">🖼️ Pengaturan Banner Atas</h4>
+                            <div class="flex items-center gap-3">
+                                <input type="file" id="banner-upload" accept="image/*" onchange="uploadBannerImage(event)" class="text-xs text-gray-500 file:mr-3 file:py-1.5 file:px-3 file:rounded-md file:border-0 file:text-xs file:font-semibold file:bg-red-50 file:text-red-700 hover:file:bg-red-100 cursor-pointer">
+                                <button onclick="resetBanner()" class="text-xs text-gray-500 hover:text-red-600 underline">Reset Standar</button>
+                            </div>
+                        </div>
+
+                        <!-- Data Filter Tabs -->
+                        <div class="flex border-b border-gray-200 text-xs font-bold">
+                            <button onclick="filterAdminData('all')" id="btn-f-all" class="py-2 px-3 border-b-2 border-red-600 text-red-600">Semua Data</button>
+                            <button onclick="filterAdminData('tamu')" id="btn-f-tamu" class="py-2 px-3 text-gray-500">Jemaat/Tamu</button>
+                            <button onclick="filterAdminData('petugas')" id="btn-f-petugas" class="py-2 px-3 text-gray-500">Pelayanan</button>
+                        </div>
+
+                        <!-- Data List Container -->
+                        <div class="space-y-3">
+                            <div class="flex justify-between items-center">
+                                <h4 class="font-bold text-sm text-gray-700">Daftar Pendaftar (<span id="total-registrants-count">0</span>)</h4>
+                                <button onclick="clearAllData()" class="text-[10px] text-red-600 border border-red-200 px-2 py-1 rounded bg-red-50 hover:bg-red-100">Hapus Semua Data</button>
+                            </div>
+                            <div id="admin-list-container" class="space-y-3 max-h-[450px] overflow-y-auto pr-1">
+                                <!-- Dynamic entries go here -->
+                                <p class="text-xs text-gray-400 text-center py-4">Belum ada data pendaftar.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+
+        <!-- FOOTER INFO -->
+        <div class="p-4 border-t border-gray-100 bg-gray-50 text-center text-[11px] text-gray-400 font-medium">
+            Sistem Pendaftaran Mandiri Bebas Biaya Natal GPdI Cikarang 2026
+        </div>
+    </div>
+
+    <!-- MODAL EDIT DATA -->
+    <div id="edit-modal" class="fixed inset-0 bg-black/50 z-50 flex items-center justify-center hidden-section p-4">
+        <div class="bg-white w-full max-w-md rounded-xl p-5 space-y-4 shadow-xl">
+            <h3 class="font-bold text-gray-800 text-base">✏️ Edit Data Pendaftaran</h3>
+            <div id="modal-fields-container" class="space-y-3 max-h-[300px] overflow-y-auto pr-1">
+                <!-- filled dynamically based on role -->
+            </div>
+            <div class="flex gap-2 justify-end pt-2 text-xs font-bold">
+                <button onclick="closeEditModal()" class="px-4 py-2 border border-gray-300 rounded-lg text-gray-600 hover:bg-gray-50">Batal</button>
+                <button onclick="saveEditedData()" class="px-4 py-2 bg-red-600 rounded-lg text-white hover:bg-red-700">Simpan Perubahan</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MAIN LOGIC HANDLER -->
+    <script>
+        // In-memory data store using LocalStorage to persist values free-of-charge without databases
+        let registrations = JSON.parse(localStorage.getItem('gpdi_natal_2026_regs')) || [];
+        let currentRegType = 'tamu';
+        let adminAuthenticated = false;
+        let currentFilter = 'all';
+        let editingId = null;
+
+        const maxQuota = 300;
+
+        // Initialize App
+        window.onload = function() {
+            updateQuotaDisplay();
+            loadSavedBanner();
+        };
+
+        function switchTab(tabId) {
+            document.getElementById('tab-daftar').classList.add('hidden-section');
+            document.getElementById('tab-admin').classList.add('hidden-section');
+            document.getElementById('btn-tab-daftar').className = "w-1/2 py-3 text-center font-semibold text-gray-500 hover:text-red-600 transition";
+            document.getElementById('btn-tab-admin').className = "w-1/2 py-3 text-center font-semibold text-gray-500 hover:text-red-600 transition";
+
+            document.getElementById(tabId).classList.remove('hidden-section');
+            document.getElementById('btn-' + tabId).className = "w-1/2 py-3 text-center font-semibold text-red-600 border-b-2 border-red-600 transition";
+            
+            if(tabId === 'tab-admin' && adminAuthenticated) {
+                renderAdminList();
+            }
+        }
+
+        function setRegType(type) {
+            currentRegType = type;
+            if(type === 'tamu') {
+                document.getElementById('section-tamu').classList.remove('hidden-section');
+                document.getElementById('section-petugas').classList.add('hidden-section');
+                document.getElementById('btn-type-tamu').className = "w-1/2 py-2 text-sm font-bold rounded-lg bg-white text-gray-800 shadow-xs transition";
+                document.getElementById('btn-type-petugas').className = "w-1/2 py-2 text-sm font-bold rounded-lg text-gray-500 transition";
+                // toggle validations
+                toggleRequiredFields('section-tamu', true);
+                toggleRequiredFields('section-petugas', false);
+            } else {
+                document.getElementById('section-tamu').classList.add('hidden-section');
+                document.getElementById('section-petugas').classList.remove('hidden-section');
+                document.getElementById('btn-type-tamu').className = "w-1/2 py-2 text-sm font-bold rounded-lg text-gray-500 transition";
+                document.getElementById('btn-type-petugas').className = "w-1/2 py-2 text-sm font-bold rounded-lg bg-white text-gray-800 shadow-xs transition";
+                // toggle validations
+                toggleRequiredFields('section-tamu', false);
+                toggleRequiredFields('section-petugas', true);
+            }
+        }
+
+        function toggleRequiredFields(sectionId, state) {
+            const inputs = document.getElementById(sectionId).querySelectorAll('input, select');
+            inputs.forEach(input => {
+                if(input.classList.contains('guest-name-input') && !state) {
+                    input.required = false;
+                } else if (!input.classList.contains('guest-name-input')) {
+                    input.required = state;
+                }
+            });
+        }
+
+        function addGuestField() {
+            const container = document.getElementById('guest-names-container');
+            const currentCount = container.getElementsByTagName('input').length;
+            if(currentCount >= 6) {
+                alert('Maksimal pengisian adalah 6 nama lengkap dalam satu pendaftaran.');
+                return;
+            }
+            const newInput = document.createElement('input');
+            newInput.type = 'text';
+            newInput.required = true;
+            newInput.className = 'guest-name-input w-full p-2.5 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-red-500 focus:outline-none';
+            newInput.placeholder = `Nama Orang ${currentCount + 1}`;
+            container.appendChild(newInput);
+        }
+
+        function getSesiCount(sesiNum) {
+            // Count actual guest entries grouped in registration tickets
+            let count = 0;
+            registrations.forEach(r => {
+                if(r.type === 'tamu' && String(r.sesi) === String(sesiNum)) {
+                    count += r.names.length;
+                }
+            });
+            return count;
+        }
+
+        function updateQuotaDisplay() {
+            const s1Used = getSesiCount(1);
+            const s2Used = getSesiCount(2);
+            const s3Used = getSesiCount(3);
+
+            document.getElementById('quota-s1').innerText = `${maxQuota - s1Used}/${maxQuota}`;
+            document.getElementById('quota-s1').className = (maxQuota - s1Used <= 20) ? "text-lg font-bold text-red-600" : "text-lg font-bold text-green-600";
+            
+            document.getElementById('quota-s2').innerText = `${maxQuota - s2Used}/${maxQuota}`;
+            document.getElementById('quota-s2').className = (maxQuota - s2Used <= 20) ? "text-lg font-bold text-red-600" : "text-lg font-bold text-green-600";
+
+            document.getElementById('quota-s3').innerText = `${maxQuota - s3Used}/${maxQuota}`;
+            document.getElementById('quota-s3').className = (maxQuota - s3Used <= 20) ? "text-lg font-bold text-red-600" : "text-lg font-bold text-green-600";
+        }
+
+        function generateUniqueId() {
+            return 'GPDI-' + Math.floor(100000 + Math.random() * 900000);
+        }
+
+        function handleRegistration(e) {
+            e.preventDefault();
+            
+            const uniqueId = generateUniqueId();
+            let newReg = { id: uniqueId, type: currentRegType, timestamp: new Date().toISOString() };
+
+            if(currentRegType === 'tamu') {
+                const nameInputs = document.querySelectorAll('.guest-name-input');
+                let names = [];
+                nameInputs.forEach(input => { if(input.value.trim()) names.push(input.value.trim()); });
+                const phone = document.getElementById('tamu-hp').value;
+                const sesi = document.getElementById('tamu-sesi').value;
+
+                // Check Quota Validity
+                const used = getSesiCount(sesi);
+                if(used + names.length > maxQuota) {
+                    alert(`Maaf, kuota untuk Sesi ${sesi} tidak mencukupi untuk jumlah pendaftar Anda (Sisa sisa kuota: ${maxQuota - used} kursi).`);
+                    return;
+                }
+
+                newReg.names = names;
+                newReg.phone = phone;
+                newReg.sesi = sesi;
+            } else {
+                const name = document.getElementById('petugas-nama').value;
+                const phone = document.getElementById('petugas-hp').value;
+                const sesi = document.getElementById('petugas-sesi').value;
+
+                newReg.names = [name];
+                newReg.phone = phone;
+                newReg.sesi = sesi; // Doesn't affect user quota limit
+            }
+
+            registrations.push(newReg);
+            localStorage.setItem('gpdi_natal_2026_regs', JSON.stringify(registrations));
+            
+            updateQuotaDisplay();
+            showSuccessTicket(newReg);
+        }
+
+        function showSuccessTicket(reg) {
+            document.getElementById('reg-form').classList.add('hidden-section');
+            document.getElementById('ticket-result').classList.remove('hidden-section');
+            document.getElementById('ticket-code').innerText = reg.id;
+
+            let detailsHtml = ``;
+            if(reg.type === 'tamu') {
+                detailsHtml = `
+                    <p><b>Kategori:</b> Jemaat / Tamu Umum</p>
+                    <p><b>Daftar Nama (${reg.names.length} Orang):</b></p>
+                    <ul class="list-disc pl-4 font-medium">${reg.names.map(n => `<li>${n}</li>`).join('')}</ul>
+                    <p class="mt-1"><b>No HP:</b> ${reg.phone}</p>
+                    <p><b>Pilihan Sesi:</b> Sesi ${reg.sesi} (${reg.sesi==1?'10:00':reg.sesi==2?'15:00':'18:30'} WIB)</p>
+                `;
+            } else {
+                detailsHtml = `
+                    <p><b>Kategori:</b> Pelayanan Khusus (Tidak Potong Kuota)</p>
+                    <p><b>Nama Petugas:</b> ${reg.names[0]}</p>
+                    <p><b>No HP:</b> ${reg.phone}</p>
+                    <p><b>Tugas Sesi:</b> ${reg.sesi}</p>
+                `;
+            }
+            document.getElementById('ticket-details').innerHTML = detailsHtml;
+        }
+
+        function resetForm() {
+            document.getElementById('reg-form').reset();
+            document.getElementById('ticket-result').classList.add('hidden-section');
+            document.getElementById('reg-form').classList.remove('hidden-section');
+            
+            // Clear multiple names except first
+            document.getElementById('guest-names-container').innerHTML = `
+                <input type="text" required class="guest-name-input w-full p-2.5 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-red-500 focus:outline-none" placeholder="Nama Orang 1">
+            `;
+            setRegType('tamu');
+        }
+
+        // --- ADMIN PANEL FUNCTIONS ---
+        function verifyAdminPin() {
+            const inputPin = document.getElementById('admin-pin').value;
+            if(inputPin === 'GPdI8700') {
+                adminAuthenticated = true;
+                document.getElementById('admin-auth').classList.add('hidden-section');
+                document.getElementById('admin-dashboard').classList.remove('hidden-section');
+                document.getElementById('auth-err').classList.add('hidden-section');
+                renderAdminList();
+            } else {
+                document.getElementById('auth-err').classList.remove('hidden-section');
+            }
+        }
+
+        function filterAdminData(filter) {
+            currentFilter = filter;
+            // update tabs view
+            ['all', 'tamu', 'petugas'].forEach(f => {
+                document.getElementById('btn-f-'+f).className = f === filter ? "py-2 px-3 border-b-2 border-red-600 text-red-600" : "py-2 px-3 text-gray-500";
+            });
+            renderAdminList();
+        }
+
+        function renderAdminList() {
+            const container = document.getElementById('admin-list-container');
+            container.innerHTML = '';
+
+            let filtered = registrations.filter(r => {
+                if(currentFilter === 'all') return true;
+                return r.type === currentFilter;
+            });
+
+            document.getElementById('total-registrants-count').innerText = filtered.length;
+
+            if(filtered.length === 0) {
+                container.innerHTML = `<p class="text-xs text-gray-400 text-center py-4">Tidak ada data ditemukan.</p>`;
+                return;
+            }
+
+            filtered.forEach(item => {
+                const card = document.createElement('div');
+                card.className = "bg-white p-3.5 border border-gray-200 rounded-xl space-y-2 text-xs relative shadow-xs";
+                
+                let detailsStr = item.type === 'tamu' 
+                    ? `<b>Sesi:</b> ${item.sesi} (${item.sesi==1?'10:00':item.sesi==2?'15:00':'18:30'} WIB)<br><b>Nama (${item.names.length}):</b> ${item.names.join(', ')}`
+                    : `<b>Sesi Tugas:</b> ${item.sesi}<br><b>Nama Pelayan:</b> ${item.names[0]}`;
+
+                card.innerHTML = `
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <span class="px-1.5 py-0.5 rounded text-[10px] font-bold ${item.type==='tamu'?'bg-blue-50 text-blue-700':'bg-purple-50 text-purple-700'}">${item.type.toUpperCase()}</span>
+                            <span class="font-mono font-bold text-gray-600 ml-1">${item.id}</span>
+                        </div>
+                        <div class="flex gap-2">
+                            <button onclick="openEditModal('${item.id}')" class="text-blue-600 font-bold hover:underline">Edit</button>
+                            <button onclick="deleteData('${item.id}')" class="text-red-600 font-bold hover:underline">Hapus</button>
+                        </div>
+                    </div>
+                    <div class="text-gray-700 leading-relaxed">
+                        ${detailsStr}<br>
+                        <b>No HP:</b> ${item.phone}
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function deleteData(id) {
+            if(confirm('Apakah Anda yakin ingin menghapus data dengan kode ' + id + '?')) {
+                registrations = registrations.filter(r => r.id !== id);
+                localStorage.setItem('gpdi_natal_2026_regs', JSON.stringify(registrations));
+                updateQuotaDisplay();
+                renderAdminList();
+            }
+        }
+
+        function clearAllData() {
+            if(confirm('PERINGATAN! Anda akan menghapus seluruh data pendaftaran secara permanen. Lanjutkan?')) {
+                registrations = [];
+                localStorage.setItem('gpdi_natal_2026_regs', JSON.stringify(registrations));
+                updateQuotaDisplay();
+                renderAdminList();
+            }
+        }
+
+        // --- EDIT MODAL HANDLERS ---
+        function openEditModal(id) {
+            editingId = id;
+            const item = registrations.find(r => r.id === id);
+            if(!item) return;
+
+            const container = document.getElementById('modal-fields-container');
+            container.innerHTML = '';
+
+            if(item.type === 'tamu') {
+                let namesHtml = ``;
+                item.names.forEach((n, idx) => {
+                    namesHtml += `
+                        <div>
+                            <label class="block text-[11px] font-bold text-gray-500">Nama Anggota ${idx+1}</label>
+                            <input type="text" value="${n}" class="modal-name-input w-full p-2 border border-gray-300 rounded-md text-xs mt-0.5">
+                        </div>
+                    `;
+                });
+                container.innerHTML = `
+                    <div class="space-y-2">
+                        ${namesHtml}
+                        <button type="button" onclick="addModalNameField()" class="text-[11px] text-red-600 font-semibold">+ Tambah Nama</button>
+                    </div>
+                    <div class="mt-2">
+                        <label class="block text-[11px] font-bold text-gray-500">Nomor HP</label>
+                        <input type="tel" id="modal-phone" value="${item.phone}" class="w-full p-2 border border-gray-300 rounded-md text-xs mt-0.5">
+                    </div>
+                    <div class="mt-2">
+                        <label class="block text-[11px] font-bold text-gray-500">Sesi</label>
+                        <select id="modal-sesi" class="w-full p-2 border border-gray-300 rounded-md text-xs mt-0.5 bg-white">
+                            <option value="1" ${item.sesi=='1'?'selected':''}>Sesi 1 (10.00 WIB)</option>
+                            <option value="2" ${item.sesi=='2'?'selected':''}>Sesi 2 (15.00 WIB)</option>
+                            <option value="3" ${item.sesi=='3'?'selected':''}>Sesi 3 (18.30 WIB)</option>
+                        </select>
+                    </div>
+                `;
+            } else {
+                container.innerHTML = `
+                    <div>
+                        <label class="block text-[11px] font-bold text-gray-500">Nama Lengkap Pelayan</label>
+                        <input type="text" id="modal-petugas-nama" value="${item.names[0]}" class="w-full p-2 border border-gray-300 rounded-md text-xs mt-0.5">
+                    </div>
+                    <div class="mt-2">
+                        <label class="block text-[11px] font-bold text-gray-500">Nomor HP</label>
+                        <input type="tel" id="modal-petugas-hp" value="${item.phone}" class="w-full p-2 border border-gray-300 rounded-md text-xs mt-0.5">
+                    </div>
+                    <div class="mt-2">
+                        <label class="block text-[11px] font-bold text-gray-500">Sesi Pelayanan</label>
+                        <select id="modal-petugas-sesi" class="w-full p-2 border border-gray-300 rounded-md text-xs mt-0.5 bg-white">
+                            <option value="Sesi 1" ${item.sesi=='Sesi 1'?'selected':''}>Sesi 1</option>
+                            <option value="Sesi 2" ${item.sesi=='Sesi 2'?'selected':''}>Sesi 2</option>
+                            <option value="Sesi 3" ${item.sesi=='Sesi 3'?'selected':''}>Sesi 3</option>
+                            <option value="Sesi 1 & 2" ${item.sesi=='Sesi 1 & 2'?'selected':''}>Sesi 1 & 2</option>
+                            <option value="Sesi 1 & 3" ${item.sesi=='Sesi 1 & 3'?'selected':''}>Sesi 1 & 3</option>
+                            <option value="Sesi 2 & 3" ${item.sesi=='Sesi 2 & 3'?'selected':''}>Sesi 2 & 3</option>
+                            <option value="Sesi 1, 2 & 3" ${item.sesi=='Sesi 1, 2 & 3'?'selected':''}>Sesi 1, 2 & 3</option>
+                        </select>
+                    </div>
+                `;
+            }
+            document.getElementById('edit-modal').classList.remove('hidden-section');
+        }
+
+        function addModalNameField() {
+            const inputs = document.querySelectorAll('.modal-name-input');
+            if(inputs.length >= 6) { alert('Maksimal 6 nama.'); return; }
+            const div = document.createElement('div');
+            div.innerHTML = `
+                <label class="block text-[11px] font-bold text-gray-500">Nama Anggota ${inputs.length+1}</label>
+                <input type="text" class="modal-name-input w-full p-2 border border-gray-300 rounded-md text-xs mt-0.5">
+            `;
+            // insert before the button
+            inputs[inputs.length-1].parentNode.parentNode.insertBefore(div, inputs[inputs.length-1].parentNode.nextSibling);
+        }
+
+        function closeEditModal() {
+            document.getElementById('edit-modal').classList.add('hidden-section');
+            editingId = null;
+        }
+
+        function saveEditedData() {
+            const itemIdx = registrations.findIndex(r => r.id === editingId);
+            if(itemIdx === -1) return;
+
+            let updatedItem = { ...registrations[itemIdx] };
+
+            if(updatedItem.type === 'tamu') {
+                const nameInputs = document.querySelectorAll('.modal-name-input');
+                let names = [];
+                nameInputs.forEach(input => { if(input.value.trim()) names.push(input.value.trim()); });
+                const phone = document.getElementById('modal-phone').value;
+                const sesi = document.getElementById('modal-sesi').value;
+
+                // validate temporary quota bypass check
+                let tempCount = 0;
+                registrations.forEach((r, idx) => {
+                    if(idx !== itemIdx && r.type === 'tamu' && String(r.sesi) === String(sesi)) {
+                        tempCount += r.names.length;
+                    }
+                });
+                if(tempCount + names.length > maxQuota) {
+                    alert('Gagal menyimpan! Kuota sesi tujuan penuh.');
+                    return;
+                }
+
+                updatedItem.names = names;
+                updatedItem.phone = phone;
+                updatedItem.sesi = sesi;
+            } else {
+                const name = document.getElementById('modal-petugas-nama').value;
+                const phone = document.getElementById('modal-petugas-hp').value;
+                const sesi = document.getElementById('modal-petugas-sesi').value;
+
+                updatedItem.names = [name];
+                updatedItem.phone = phone;
+                updatedItem.sesi = sesi;
+            }
+
+            registrations[itemIdx] = updatedItem;
+            localStorage.setItem('gpdi_natal_2026_regs', JSON.stringify(registrations));
+            
+            updateQuotaDisplay();
+            renderAdminList();
+            closeEditModal();
+        }
+
+        // --- BANNER UPLOAD ENGINE ---
+        function uploadBannerImage(event) {
+            const file = event.target.files[0];
+            if(file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const base64Img = e.target.result;
+                    localStorage.setItem('gpdi_natal_2026_banner', base64Img);
+                    applyBanner(base64Img);
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function loadSavedBanner() {
+            const savedBanner = localStorage.getItem('gpdi_natal_2026_banner');
+            if(savedBanner) {
+                applyBanner(savedBanner);
+            }
+        }
+
+        function applyBanner(src) {
+            const imgEl = document.getElementById('banner-img');
+            imgEl.src = src;
+            imgEl.classList.remove('hidden');
+            document.getElementById('banner-placeholder').classList.add('bg-black/30', 'absolute', 'inset-0');
+        }
+
+        function resetBanner() {
+            localStorage.removeItem('gpdi_natal_2026_banner');
+            const imgEl = document.getElementById('banner-img');
+            imgEl.src = "";
+            imgEl.classList.add('hidden');
+            document.getElementById('banner-placeholder').className = "text-center p-4 z-10";
+            document.getElementById('banner-upload').value = "";
+        }
+    </script>
+</body>
+</html>
